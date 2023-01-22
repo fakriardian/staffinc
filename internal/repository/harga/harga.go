@@ -49,3 +49,17 @@ func (hr *hargaRepo) DeleteExisting(adminID string) (string, error) {
 	return "done", nil
 
 }
+
+func (hr *hargaRepo) CheckHarga() (model.Harga, error) {
+	var hargaData model.Harga
+
+	if err := hr.db.First(&hargaData).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return model.Harga{}, nil
+		} else {
+			return model.Harga{}, err
+		}
+	}
+
+	return hargaData, nil
+}

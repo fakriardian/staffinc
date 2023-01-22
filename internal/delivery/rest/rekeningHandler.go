@@ -10,8 +10,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *handler) InputHarga(c echo.Context) error {
-	var request constant.InputHargaRequest
+func (h *handler) CheckSaldo(c echo.Context) error {
+	var request constant.CheckSaldoRequest
 	err := json.NewDecoder(c.Request().Body).Decode(&request)
 	if err != nil {
 		fmt.Printf("got error %s\n", err.Error())
@@ -22,28 +22,7 @@ func (h *handler) InputHarga(c echo.Context) error {
 		})
 	}
 
-	hargaData, err := h.emasUseCase.UpdateHarga(request)
-	if err != nil {
-		fmt.Printf("got error %s\n", err.Error())
-
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"error":   true,
-			"message": err.Error(),
-			"reff_id": uuid.NewString(),
-		})
-	}
-
-	fmt.Printf("added new record by adminId: %s\n", hargaData.AdminID)
-
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"error":   false,
-		"reff_id": uuid.NewString(),
-	})
-
-}
-
-func (h *handler) CheckHarga(c echo.Context) error {
-	checkHarga, err := h.emasUseCase.CheckHarga()
+	checkRekening, err := h.emasUseCase.CheckRekening(request)
 	if err != nil {
 		fmt.Printf("got error %s\n", err.Error())
 
@@ -56,6 +35,7 @@ func (h *handler) CheckHarga(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"error": false,
-		"data":  checkHarga,
+		"data":  checkRekening,
 	})
+
 }

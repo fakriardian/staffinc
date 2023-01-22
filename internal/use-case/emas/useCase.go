@@ -13,17 +13,20 @@ import (
 	"github.com/fakriardian/staffinc/internal/model"
 	"github.com/fakriardian/staffinc/internal/model/constant"
 	"github.com/fakriardian/staffinc/internal/repository/harga"
+	"github.com/fakriardian/staffinc/internal/repository/rekening"
 	"github.com/google/uuid"
 	"github.com/segmentio/kafka-go"
 )
 
 type emasUseCase struct {
-	hargaRepo harga.Repository
+	hargaRepo    harga.Repository
+	rekeningRepo rekening.Repository
 }
 
-func GetUseCase(hargaRepo harga.Repository) Usecase {
+func GetUseCase(hargaRepo harga.Repository, rekeningRepo rekening.Repository) Usecase {
 	return &emasUseCase{
-		hargaRepo: hargaRepo,
+		hargaRepo:    hargaRepo,
+		rekeningRepo: rekeningRepo,
 	}
 }
 
@@ -88,4 +91,23 @@ func (eu *emasUseCase) ConsumerUpdateHarga() error {
 		fmt.Printf("get new message %s\n", string(message))
 		time.Sleep(1000 * time.Millisecond)
 	}
+}
+
+func (eu *emasUseCase) CheckHarga() (model.Harga, error) {
+	hargaData, err := eu.hargaRepo.CheckHarga()
+	if err != nil {
+		return model.Harga{}, err
+	}
+
+	return hargaData, nil
+}
+
+func (eu *emasUseCase) CheckRekening(request constant.CheckSaldoRequest) (model.Rekening, error) {
+	rekeningData, err := eu.rekeningRepo.CheckSaldo(request.NoRek)
+	if err != nil {
+		return model.Rekening{}, err
+	}
+
+	return rekeningData, nil
+
 }
