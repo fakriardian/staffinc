@@ -15,9 +15,9 @@ create table
 
 create table
     if not exists transactions (
-        id varchar(10) primary key,
+        id varchar primary key,
         no_rek varchar(10) not null,
-        transaction_date timestamp not null,
+        transaction_date integer not null,
         type varchar(15) not null,
         gram float not null,
         saldo float not null,

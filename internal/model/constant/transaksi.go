@@ -15,13 +15,15 @@ type CheckMutasiRequest struct {
 }
 
 type TopUpRequest struct {
-	NoRek      string `json:"norek"`
-	Gram       int64  `json:"gram"`
-	HargaTopUp int64  `json:"harga"`
+	NoRek        string  `json:"norek"`
+	Gram         float64 `json:"gram"`
+	HargaTopUp   int64   `json:"harga"`
+	HargaBuyBack int64   `json:"-"`
 }
 
 type BuyBackRequest struct {
-	NoRek        string `json:"norek"`
-	Gram         int64  `json:"gram"`
-	HargaBuyBack int64  `json:"harga"`
+	NoRek        string  `json:"norek"`
+	Gram         float64 `json:"gram"`
+	HargaTopUp   int64   `json:"_"`
+	HargaBuyBack int64   `json:"harga"`
 }

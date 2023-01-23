@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *handler) InputHarga(c echo.Context) error {
+func (h *handler) ProducerInputHarga(c echo.Context) error {
 	var request constant.InputHargaRequest
 	err := json.NewDecoder(c.Request().Body).Decode(&request)
 	if err != nil {
@@ -22,7 +22,7 @@ func (h *handler) InputHarga(c echo.Context) error {
 		})
 	}
 
-	hargaData, err := h.emasUseCase.UpdateHarga(request)
+	hargaData, err := h.emasUseCase.ProducerUpdateHarga(request)
 	if err != nil {
 		fmt.Printf("got error %s\n", err.Error())
 
@@ -39,7 +39,6 @@ func (h *handler) InputHarga(c echo.Context) error {
 		"error":   false,
 		"reff_id": uuid.NewString(),
 	})
-
 }
 
 func (h *handler) CheckHarga(c echo.Context) error {

@@ -1,95 +1,28 @@
 package emas
 
 import (
-	"context"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"log"
-	"time"
-
-	con "github.com/fakriardian/staffinc/internal/delivery/kafka/consumer"
-	pro "github.com/fakriardian/staffinc/internal/delivery/kafka/producer"
 	"github.com/fakriardian/staffinc/internal/model"
 	"github.com/fakriardian/staffinc/internal/model/constant"
 	"github.com/fakriardian/staffinc/internal/repository/harga"
 	"github.com/fakriardian/staffinc/internal/repository/rekening"
-	"github.com/google/uuid"
-	"github.com/segmentio/kafka-go"
+	"github.com/fakriardian/staffinc/internal/repository/transaksi"
 )
 
 type emasUseCase struct {
-	hargaRepo    harga.Repository
-	rekeningRepo rekening.Repository
+	hargaRepo       harga.Repository
+	rekeningRepo    rekening.Repository
+	transactionRepo transaksi.Repository
 }
 
-func GetUseCase(hargaRepo harga.Repository, rekeningRepo rekening.Repository) Usecase {
+func GetUseCase(
+	hargaRepo harga.Repository,
+	rekeningRepo rekening.Repository,
+	transactionRepo transaksi.Repository,
+) Usecase {
 	return &emasUseCase{
-		hargaRepo:    hargaRepo,
-		rekeningRepo: rekeningRepo,
-	}
-}
-
-func (eu *emasUseCase) UpdateHarga(request constant.InputHargaRequest) (model.Harga, error) {
-	connectKafka := pro.Connection()
-	topic := "input-harga"
-	topicConfig := kafka.TopicConfig{Topic: topic, NumPartitions: 1, ReplicationFactor: 1}
-	err := connectKafka.CreateTopics(topicConfig)
-
-	if err != nil {
-		return model.Harga{}, errors.New("kafka not ready")
-	}
-
-	producer := pro.NewProducer()
-	marsheledProduct, _ := json.Marshal(request)
-	pro.Produce([]byte(uuid.NewString()), marsheledProduct, topic, producer)
-
-	return model.Harga{}, nil
-}
-
-func (eu *emasUseCase) ConsumerUpdateHarga() error {
-	topic := "input-harga"
-	reader := con.GetKafkaReader(topic)
-
-	defer reader.Close()
-
-	fmt.Println("start consuming ... !!")
-	temp := model.Harga{}
-
-	for {
-		msg, err := reader.ReadMessage(context.Background())
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		err = json.Unmarshal(msg.Value, &temp)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		isExistingData, err := eu.hargaRepo.IsExisting()
-		if err != nil {
-			return err
-		}
-
-		if isExistingData != "" {
-			eu.hargaRepo.DeleteExisting(isExistingData)
-		}
-
-		hargaData, err := eu.hargaRepo.AddHarga(model.Harga{
-			AdminID:      temp.AdminID,
-			HargaTopUp:   temp.HargaTopUp,
-			HargaBuyBack: temp.HargaBuyBack,
-		})
-
-		message, _ := json.Marshal(hargaData)
-
-		if err != nil {
-			return err
-		}
-
-		fmt.Printf("get new message %s\n", string(message))
-		time.Sleep(1000 * time.Millisecond)
+		hargaRepo:       hargaRepo,
+		rekeningRepo:    rekeningRepo,
+		transactionRepo: transactionRepo,
 	}
 }
 
@@ -103,6 +36,11 @@ func (eu *emasUseCase) CheckHarga() (model.Harga, error) {
 }
 
 func (eu *emasUseCase) CheckRekening(request constant.CheckSaldoRequest) (model.Rekening, error) {
+	_, err := eu.rekeningRepo.IsExisting(request.NoRek)
+	if err != nil {
+		return model.Rekening{}, err
+	}
+
 	rekeningData, err := eu.rekeningRepo.CheckSaldo(request.NoRek)
 	if err != nil {
 		return model.Rekening{}, err
@@ -110,4 +48,18 @@ func (eu *emasUseCase) CheckRekening(request constant.CheckSaldoRequest) (model.
 
 	return rekeningData, nil
 
+}
+
+func (eu *emasUseCase) CheckMutasi(request constant.CheckMutasiRequest) ([]model.Transaction, error) {
+	_, err := eu.transactionRepo.IsExisting(request.NoRek)
+	if err != nil {
+		return []model.Transaction{}, err
+	}
+
+	transactionData, err := eu.transactionRepo.GetTransaction(request.NoRek, request.StartDate, request.EndDate)
+	if err != nil {
+		return []model.Transaction{}, err
+	}
+
+	return transactionData, nil
 }

@@ -3,6 +3,7 @@ package producer
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/segmentio/kafka-go"
@@ -20,7 +21,7 @@ func NewProducer() *Producer {
 	}
 
 	writer := kafka.NewWriter(kafka.WriterConfig{
-		Brokers: []string{"localhost:9092"},
+		Brokers: []string{os.Getenv("KAFKA_URL")},
 		Dialer:  dialer,
 	})
 
