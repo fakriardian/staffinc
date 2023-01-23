@@ -1,0 +1,173 @@
+{
+	"info": {
+		"_postman_id": "37fb4e86-4f48-4159-9e7d-40493fbac1b8",
+		"name": "staffinc",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7208524"
+	},
+	"item": [
+		{
+			"name": "update harga",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"admin_id\": \"a006\",\r\n    \"harga_topup\": 200000,\r\n    \"harga_buyback\": 180000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/input-harga",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"input-harga"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check harga",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/check-harga",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"check-harga"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check saldo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"norek\": \"abcd\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/saldo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"saldo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check mutasi",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"norek\": \"abcd\",\r\n    \"start_date\": 1674465286,\r\n    \"end_date\": 1674465286\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/mutasi",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"mutasi"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "topup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"norek\": \"abcd\",\r\n    \"harga\": 200000,\r\n    \"gram\": 0.2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/api/topup",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"topup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "buy back",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"norek\": \"abcd\",\r\n    \"harga\": 180000,\r\n    \"gram\": 0.1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/api/buyback",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"buyback"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
