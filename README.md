@@ -33,4 +33,4 @@ $ go mod tidy
 $ go run ./cmd/main.go
 ```
 
-for postman collection in [here](https://github.com/fakriardian/staffinc/staffinc.postman_collection.json)
+for postman collection in [here](https://github.com/fakriardian/staffinc/blob/main/staffinc.postman_collection.json)
